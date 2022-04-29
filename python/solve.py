@@ -22,7 +22,7 @@ def solve_naive(instance: Instance) -> Solution:
     )
 
 
-def solve_greedy(instance: Instance) -> Solution:
+def solve_sequential_greedy(instance: Instance) -> Solution:
     # use greedy algorithm to solve MDSP
 
     # create set S to put in MDS points (to place towers)
