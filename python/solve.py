@@ -8,7 +8,7 @@ For usage, run `python3 solve.py --help`.
 import argparse
 from pathlib import Path
 from typing import Callable, Dict
-
+import numpy as np
 from instance import Instance
 from solution import Solution
 from file_wrappers import StdinFileWrapper, StdoutFileWrapper
@@ -28,12 +28,36 @@ def solve_greedy(instance: Instance) -> Solution:
     # initialize set as empty
 
     # while there exist unvisited points in grid
-        # choose a point v from a set x of points 
-        # where the number of unvisited points among the 
-        # direct neighbors of x is the highest of all vertices
-        # then add v to S
+    # choose a point v from a set x of points
+    # where the number of unvisited points among the
+    # direct neighbors of x is the highest of all vertices
+    # then add v to S
     # end while
 
+    listCityMatrix = []
+    dictCity = {}
+    listTower = []
+    D = instance.grid_side_length
+    for idx, city in enumerate(instance.cities):
+        dictCity[idx] = city
+        cityMatrix = np.zeroes(D, D)
+        xCoord = city.x
+        yCoord = city.y
+        for i in range(-2, 3):
+            for j in range(-2, 3):
+                xresult = xCoord + i
+                yresult = yCoord + i
+                xresult = xresult if xresult > 0 else 0
+                xresult = xresult if xresult < D else D
+                yresult = yresult if yresult > 0 else 0
+                yresult = yresult if yresult < D else D
+                cityMatrix[xresult][yresult] = 1
+                listTower.append((xresult, yresult))
+        cityMatrix[xCoord + 3 if xCoord + 3 < D else D][yCoord] = 1
+        cityMatrix[xCoord - 3 if xCoord - 0 > 0 else 0][yCoord] = 1
+        cityMatrix[xCoord][yCoord + 3 if yCoord + 3 < D else D] = 1
+        cityMatrix[xCoord][yCoord - 3 if yCoord - 3 > 0 else 0] = 1
+        listCityMatrix.append(cityMatrix)
 
     return Solution(instance=instance, towers=instance.cities,)
 
