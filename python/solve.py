@@ -88,7 +88,7 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
 
 SOLVERS: Dict[str, Callable[[Instance], Solution]] = {
     "naive": solve_naive,
-    "greedy": solve_greedy
+    "greedy": solve_sequential_greedy
 }
 
 
