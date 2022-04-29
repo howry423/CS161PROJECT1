@@ -15,6 +15,19 @@ from file_wrappers import StdinFileWrapper, StdoutFileWrapper
 
 
 def solve_naive(instance: Instance) -> Solution:
+# use greedy algorithm to solve MDSP
+
+    # create set S to put in MDS points (to place towers)
+    # initialize set as empty
+
+    # while there exist unvisited points in grid
+        # choose a point v from a set x of points 
+        # where the number of unvisited points among the 
+        # direct neighbors of x is the highest of all vertices
+        # then add v to S
+    # end while
+
+
     return Solution(
         instance=instance,
         towers=instance.cities,
