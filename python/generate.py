@@ -27,16 +27,18 @@ def make_small_instance() -> Instance:
     """
     cities = []
     # YOUR CODE HERE
+    city_coordinates = []
     no_cities = random.randint(
-        Size.SMALL.max_num_cities, Size.SMALL.min_num_cities)
+        Size.SMALL.min_num_cities, Size.SMALL.max_num_cities)
     D = Size.SMALL.grid_side_length
     for city in range(no_cities):
         x = random.randint(0, D-1)
         y = random.randint(0, D-1)
-        while (x, y) in cities:
+        while (x, y) in city_coordinates:
             x = random.randint(0, D-1)
             y = random.randint(0, D-1)
-        cities.append((x, y))
+        cities.append(Point.parse("{} {}".format(x, y)))
+        city_coordinates.append((x, y))
 
     return Size.SMALL.instance(cities)
 
@@ -50,16 +52,18 @@ def make_medium_instance() -> Instance:
     is valid.
     """
     cities = []
+    city_coordinates = []
     no_cities = random.randint(
-        Size.MEDIUM.max_num_cities, Size.MEDIUM.min_num_cities)
+        Size.MEDIUM.min_num_cities, Size.MEDIUM.max_num_cities)
     D = Size.MEDIUM.grid_side_length
     for city in range(no_cities):
         x = random.randint(0, D-1)
         y = random.randint(0, D-1)
-        while (x, y) in cities:
+        while (x, y) in city_coordinates:
             x = random.randint(0, D-1)
             y = random.randint(0, D-1)
-        cities.append((x, y))
+        cities.append(Point.parse("{} {}".format(x, y)))
+        city_coordinates.append((x, y))
     return Size.MEDIUM.instance(cities)
 
 
@@ -73,16 +77,18 @@ def make_large_instance() -> Instance:
     """
     cities = []
     # YOUR CODE HERE
+    city_coordinates = []
     no_cities = random.randint(
-        Size.LARGE.max_num_cities, Size.LARGE.min_num_cities)
+        Size.LARGE.min_num_cities, Size.LARGE.max_num_cities)
     D = Size.LARGE.grid_side_length
     for city in range(no_cities):
         x = random.randint(0, D-1)
         y = random.randint(0, D-1)
-        while (x, y) in cities:
+        while (x, y) in city_coordinates:
             x = random.randint(0, D-1)
             y = random.randint(0, D-1)
-        cities.append((x, y))
+        cities.append(Point.parse("{} {}".format(x, y)))
+        city_coordinates.append((x, y))
     return Size.LARGE.instance(cities)
 
 
