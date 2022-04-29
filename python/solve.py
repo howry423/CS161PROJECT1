@@ -15,7 +15,14 @@ from file_wrappers import StdinFileWrapper, StdoutFileWrapper
 
 
 def solve_naive(instance: Instance) -> Solution:
-# use greedy algorithm to solve MDSP
+    return Solution(
+        instance=instance,
+        towers=instance.cities,
+    )
+
+
+def solve_greedy(instance: Instance) -> Solution:
+    # use greedy algorithm to solve MDSP
 
     # create set S to put in MDS points (to place towers)
     # initialize set as empty
@@ -28,13 +35,6 @@ def solve_naive(instance: Instance) -> Solution:
     # end while
 
 
-    return Solution(
-        instance=instance,
-        towers=instance.cities,
-    )
-
-
-def solve_greedy(instance: Instance) -> Solution:
     return Solution(instance=instance, towers=instance.cities,)
 
 
