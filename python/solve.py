@@ -8,6 +8,7 @@ For usage, run `python3 solve.py --help`.
 import argparse
 from pathlib import Path
 from typing import Callable, Dict
+from point import Point
 import numpy as np
 from instance import Instance
 from solution import Solution
@@ -36,10 +37,11 @@ def solve_greedy(instance: Instance) -> Solution:
 
     listCityMatrix = []
     dictCity = {}
+    setTower = []
     listTower = []
     D = instance.grid_side_length
     for idx, city in enumerate(instance.cities):
-        dictCity[idx] = city
+        dictCity[city] = idx
         cityMatrix = np.zeroes(D, D)
         xCoord = city.x
         yCoord = city.y
@@ -52,12 +54,28 @@ def solve_greedy(instance: Instance) -> Solution:
                 yresult = yresult if yresult > 0 else 0
                 yresult = yresult if yresult < D else D
                 cityMatrix[xresult][yresult] = 1
-                listTower.append((xresult, yresult))
+                setTower.append((xresult, yresult))
         cityMatrix[xCoord + 3 if xCoord + 3 < D else D][yCoord] = 1
         cityMatrix[xCoord - 3 if xCoord - 0 > 0 else 0][yCoord] = 1
         cityMatrix[xCoord][yCoord + 3 if yCoord + 3 < D else D] = 1
         cityMatrix[xCoord][yCoord - 3 if yCoord - 3 > 0 else 0] = 1
         listCityMatrix.append(cityMatrix)
+    setTower = list(set(setTower))
+    for tower in setTower:
+        listTower.append(Point.parse("{} {}".format(tower[0], tower[1])))
+
+    highestTower = listTower[0]
+    highestDegree = 0
+    for city in dictCity.items():
+        highestDegree += city[highestTower.x][highestTower.y]
+    for idx, tower in enumerate(listTower):
+        if idx == 0:
+            continue
+        for city in dictCity.items():
+            tempDegree += city[tower.x][tower.y]
+        if tempDegree > highestDegree:
+            highestDegree = tempDegree
+            highestTower = tower
 
     return Solution(instance=instance, towers=instance.cities,)
 
