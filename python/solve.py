@@ -34,8 +34,13 @@ def solve_naive(instance: Instance) -> Solution:
     )
 
 
+def solve_greedy(instance: Instance) -> Solution:
+    return Solution(instance=instance, towers=instance.cities,)
+
+
 SOLVERS: Dict[str, Callable[[Instance], Solution]] = {
-    "naive": solve_naive
+    "naive": solve_naive,
+    "greedy": solve_greedy
 }
 
 
