@@ -48,7 +48,7 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
     # for loop to fill up matrix for each city
     for idx, city in enumerate(instance.cities):
         dictCity[city] = idx
-        cityMatrix = np.zeros((D+1, D+1))
+        cityMatrix = np.zeros((D, D))
         xCoord = city.x
         yCoord = city.y
         for i in range(-2, 3):
@@ -56,24 +56,23 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
                 xresult = xCoord + i
                 yresult = yCoord + j
                 xresult = xresult if xresult >= 0 else 0
-                xresult = xresult if xresult <= D else D
+                xresult = xresult if xresult < D else D-1
                 yresult = yresult if yresult >= 0 else 0
-                yresult = yresult if yresult <= D else D
+                yresult = yresult if yresult < D else D-1
                 cityMatrix[xresult][yresult] = 1
                 setTower.append((xresult, yresult))
-        xresult = xCoord + 3 if xCoord + 3 <= D else D
+        xresult = xCoord + 3 if xCoord + 3 < D else D-1
         cityMatrix[xresult][yCoord] = 1
         setTower.append((xresult, yresult))
         xresult = xCoord - 3 if xCoord - 3 >= 0 else 0
         cityMatrix[xresult][yCoord] = 1
         setTower.append((xresult, yresult))
-        yresult = yCoord + 3 if yCoord + 3 <= D else D
+        yresult = yCoord + 3 if yCoord + 3 < D else D-1
         cityMatrix[xCoord][yresult] = 1
         setTower.append((xresult, yresult))
         yresult = yCoord - 3 if yCoord - 3 >= 0 else 0
         cityMatrix[xCoord][yresult] = 1
         setTower.append((xresult, yresult))
-        # don't we need to setTower.append() for the above 4 points also?
         listCityMatrix.append(cityMatrix)
     setTower = list(set(setTower))
     for tower in setTower:
@@ -105,6 +104,7 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
             dictCity.pop(city_point)
 
     return Solution(instance=instance, towers=solution_set)
+
 
 SOLVERS: Dict[str, Callable[[Instance], Solution]] = {
     "naive": solve_naive,
