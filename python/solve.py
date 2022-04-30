@@ -23,7 +23,6 @@ def solve_naive(instance: Instance) -> Solution:
         towers=instance.cities,
     )
 
-
 def solve_sequential_greedy(instance: Instance) -> Solution:
 
     # initialize data structures
@@ -93,43 +92,36 @@ def solve_distributed_greedy(instance: Instance) -> Solution:
         highest_x, highest_y = highestTower.x, highestTower.y
         connected_cities = []
         highestDegree = 0
+        curDegree = finalMatrix[highest_x][highest_y]
 
         # check all towers within service radius for highest tower
         for i in range(-2, 3):
             for j in range(-2, 3):
                 x_neighbour = highest_x + i
                 y_neighbour = highest_y + j
-                # check if (x_neighbour, y_neighbour) is in listTower
-                # if yes, 
-                    # then check if 
-                xresult = xresult if xresult >= 0 else 0
-                xresult = xresult if xresult < D else D-1
-                yresult = yresult if yresult >= 0 else 0
-                yresult = yresult if yresult < D else D-1
-                cityMatrix[xresult][yresult] = 1
-                setTower.append((xresult, yresult))
+                if (x_neighbour, y_neighbour) in listTower:
+                    for idx, tower in enumerate(listTower):
+                        temp_connected_cities = []
+                        for city, city_idx in dictCity.items():
+                            connected = listCityMatrix[city_idx][tower.x][tower.y]
+                            # if tower is connected to city
+                            if connected > 0:
+                                temp_connected_cities.append(city)
+                        if curDegree > highestDegree:
+                            highestDegree = curDegree
+                            highestTower = tower
+                            connected_cities = temp_connected_cities
 
-        for idx, tower in enumerate(listTower):
-            tempDegree = 0
-            temp_connected_cities = []
-            for city, city_idx in dictCity.items():
-                connected = listCityMatrix[city_idx][tower.x][tower.y]
-                # if tower is connected to city
-                if connected > 0:
-                    temp_connected_cities.append(city)
-                    tempDegree += connected
-            if tempDegree > highestDegree:
-                highestDegree = tempDegree
-                highestTower = tower
-                connected_cities = temp_connected_cities
-
-        solution_set.append(highestTower)
+                    # add this tower with highest degree to solution set
+                    solution_set.append(highestTower)
         
+        # penalizing 
         for i in range(highestTower.x - Rp if highestTower.x - Rp >= 0 else 0, highestTower.x + Rp + 1 if highestTower.x + Rp + 1 < D+1 else D):
             for j in range(highestTower.y - Rp if highestTower.y - Rp >= 0 else 0, highestTower.y + Rp + 1 if highestTower.y + Rp + 1 < D+1 else D):
                 if Point.distance_obj(Point.parse("{} {}".format(i, j)), highestTower) <= Rp:
                     for cityMatrix in listCityMatrix:
                         cityMatrix[i][j] = cityMatrix[i][j]/(math.exp(0.17))
+
         # find the cities the tower is connected to and remove it from dictCity
         for city_point in connected_cities:
             dictCity.pop(city_point)
