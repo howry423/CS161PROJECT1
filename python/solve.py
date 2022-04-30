@@ -38,9 +38,9 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
     # initialize data structures
     listCityMatrix = []
     dictCity = {}
-    setTower = []
     listTower = []
     solution_set = []
+    setTower = []
 
     # set constants
     D = instance.grid_side_length
@@ -72,25 +72,29 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
         listTower.append(Point.parse("{} {}".format(tower[0], tower[1])))
 
     # find highest tower
-    highestTower = listTower[0]
-    highestDegree = 0
+    while not(dictCity):
+        highestTower = listTower[0]
+        connected_cities = []
+        highestDegree = 0
+        for idx, tower in enumerate(listTower):
+            tempDegree = 0
+            temp_connected_cities = []
+            for city, city_idx in dictCity.items():
+                connected = listCityMatrix[city_idx][tower.x][tower.y]
+                if connected > 0:
+                    temp_connected_cities.append(city)
+                    tempDegree += connected
+            if tempDegree > highestDegree:
+                highestDegree = tempDegree
+                highestTower = tower
+                connected_cities = temp_connected_cities
 
-    for city in dictCity.items():
-        highestDegree += city[highestTower.x][highestTower.y]
-    for idx, tower in enumerate(listTower):
-        if idx == 0:
-            continue
-        for city in dictCity.items():
-            tempDegree += city[tower.x][tower.y]
-        if tempDegree > highestDegree:
-            highestDegree = tempDegree
-            highestTower = tower
+        solution_set.append(highestTower)
+        # find the cities the tower is connected to and remove it from dictCity
+        for city_point in connected_cities:
+            dictCity.pop(city_point)
 
-    solution_set.append(highestTower)
-
-    dictCity.pop(highestTower)
-
-    return Solution(instance=instance, towers=instance.cities,)
+    return Solution(instance=instance, towers=solution_set,)
 
 
 SOLVERS: Dict[str, Callable[[Instance], Solution]] = {
