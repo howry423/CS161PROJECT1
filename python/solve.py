@@ -73,6 +73,7 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
         yresult = yCoord - 3 if yCoord - 3 >= 0 else 0
         cityMatrix[xCoord][yresult] = 1
         setTower.append((xresult, yresult))
+        # don't we need to setTower.append() for the above 4 points also?
         listCityMatrix.append(cityMatrix)
     setTower = list(set(setTower))
     for tower in setTower:
@@ -104,7 +105,6 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
             dictCity.pop(city_point)
 
     return Solution(instance=instance, towers=solution_set)
-
 
 SOLVERS: Dict[str, Callable[[Instance], Solution]] = {
     "naive": solve_naive,
