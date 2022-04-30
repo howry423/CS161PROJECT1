@@ -72,7 +72,7 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
         listTower.append(Point.parse("{} {}".format(tower[0], tower[1])))
 
     # find highest tower
-    while not(dictCity):
+    while len(dictCity) > 0:
         highestTower = listTower[0]
         connected_cities = []
         highestDegree = 0
@@ -81,6 +81,7 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
             temp_connected_cities = []
             for city, city_idx in dictCity.items():
                 connected = listCityMatrix[city_idx][tower.x][tower.y]
+                # if tower is connected to city
                 if connected > 0:
                     temp_connected_cities.append(city)
                     tempDegree += connected
@@ -90,11 +91,12 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
                 connected_cities = temp_connected_cities
 
         solution_set.append(highestTower)
+
         # find the cities the tower is connected to and remove it from dictCity
         for city_point in connected_cities:
             dictCity.pop(city_point)
 
-    return Solution(instance=instance, towers=solution_set,)
+    return Solution(instance=instance, towers=solution_set)
 
 
 SOLVERS: Dict[str, Callable[[Instance], Solution]] = {
