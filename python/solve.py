@@ -100,6 +100,7 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
                 connected_cities = temp_connected_cities
 
         solution_set.append(highestTower)
+        
         for i in range(highestTower.x - Rp if highestTower.x - Rp >= 0 else 0, highestTower.x + Rp + 1 if highestTower.x + Rp + 1 < D+1 else D):
             for j in range(highestTower.y - Rp if highestTower.y - Rp >= 0 else 0, highestTower.y + Rp + 1 if highestTower.y + Rp + 1 < D+1 else D):
                 if Point.distance_obj(Point.parse("{} {}".format(i, j)), highestTower) <= Rp:
