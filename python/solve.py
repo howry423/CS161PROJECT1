@@ -48,26 +48,26 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
     # for loop to fill up matrix for each city
     for idx, city in enumerate(instance.cities):
         dictCity[city] = idx
-        cityMatrix = np.zeros((D, D))
+        cityMatrix = np.zeros((D+1, D+1))
         xCoord = city.x
         yCoord = city.y
         for i in range(-2, 3):
             for j in range(-2, 3):
                 xresult = xCoord + i
                 yresult = yCoord + j
-                xresult = xresult if xresult > 0 else 0
-                xresult = xresult if xresult < D else D-1
-                yresult = yresult if yresult > 0 else 0
-                yresult = yresult if yresult < D else D-1
+                xresult = xresult if xresult >= 0 else 0
+                xresult = xresult if xresult <= D else D-1
+                yresult = yresult if yresult >= 0 else 0
+                yresult = yresult if yresult <= D else D-1
                 cityMatrix[xresult][yresult] = 1
                 setTower.append((xresult, yresult))
-        xresult = xCoord + 3 if xCoord + 3 < D else D-1
+        xresult = xCoord + 3 if xCoord + 3 <= D else D-1
         cityMatrix[xresult][yCoord] = 1
-        xresult = xCoord - 3 if xCoord - 0 > 0 else 0
+        xresult = xCoord - 3 if xCoord - 3 >= 0 else 0
         cityMatrix[xresult][yCoord] = 1
-        yresult = yCoord + 3 if yCoord + 3 < D else D-1
+        yresult = yCoord + 3 if yCoord + 3 <= D else D-1
         cityMatrix[xCoord][yresult] = 1
-        yresult = yCoord - 3 if yCoord - 3 > 0 else 0
+        yresult = yCoord - 3 if yCoord - 3 >= 0 else 0
         cityMatrix[xCoord][yresult] = 1
         # don't we need to setTower.append() for the above 4 points also?
         listCityMatrix.append(cityMatrix)
