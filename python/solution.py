@@ -27,20 +27,15 @@ class Solution:
         """
         for tower in self.towers:
             if not 0 <= tower.x < self.instance.grid_side_length:
-                print("X ISSUES")
                 return False
             if not 0 <= tower.y < self.instance.grid_side_length:
-                print(tower)
-                print("Y ISSUES")
                 return False
 
         for city in self.instance.cities:
             for tower in self.towers:
                 if Point.distance_obj(city, tower) <= self.instance.coverage_radius:
-                    print("all good with", city, tower)
                     break
             else:
-                print("HAVING PROBLEMS WITH", city)
                 return False
 
         return len(set(self.towers)) == len(self.towers)
