@@ -40,6 +40,7 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
     dictCity = {}
     setTower = []
     listTower = []
+    solution_set = []
 
     # set constants
     D = instance.grid_side_length
@@ -70,8 +71,10 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
     for tower in setTower:
         listTower.append(Point.parse("{} {}".format(tower[0], tower[1])))
 
+    # find highest tower
     highestTower = listTower[0]
     highestDegree = 0
+
     for city in dictCity.items():
         highestDegree += city[highestTower.x][highestTower.y]
     for idx, tower in enumerate(listTower):
@@ -82,6 +85,10 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
         if tempDegree > highestDegree:
             highestDegree = tempDegree
             highestTower = tower
+
+    solution_set.append(highestTower)
+
+    dictCity.pop(highestTower)
 
     return Solution(instance=instance, towers=instance.cities,)
 
