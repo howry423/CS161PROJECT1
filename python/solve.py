@@ -13,6 +13,7 @@ import numpy as np
 from instance import Instance
 from solution import Solution
 from file_wrappers import StdinFileWrapper, StdoutFileWrapper
+import math
 
 
 def solve_naive(instance: Instance) -> Solution:
@@ -44,6 +45,7 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
 
     # set constants
     D = instance.grid_side_length
+    Rp = instance.R_p
 
     # for loop to fill up matrix for each city
     for idx, city in enumerate(instance.cities):
@@ -98,7 +100,11 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
                 connected_cities = temp_connected_cities
 
         solution_set.append(highestTower)
-
+        for i in range(highestTower.x - Rp if highestTower.x - Rp >= 0 else 0, highestTower.x + Rp + 1 if highestTower.x + Rp + 1 < D+1 else D):
+            for j in range(highestTower.y - Rp if highestTower.y - Rp >= 0 else 0, highestTower.y + Rp + 1 if highestTower.y + Rp + 1 < D+1 else D):
+                if Point.distance_obj(Point.parse("{} {}".format(i, j), highestTower)) <= Rp:
+                    for cityMatrix in listCityMatrix:
+                        cityMatrix[i][j] = cityMatrix[i][j]/(math.exp(0.17))
         # find the cities the tower is connected to and remove it from dictCity
         for city_point in connected_cities:
             dictCity.pop(city_point)
