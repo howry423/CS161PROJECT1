@@ -63,12 +63,16 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
                 setTower.append((xresult, yresult))
         xresult = xCoord + 3 if xCoord + 3 <= D else D-1
         cityMatrix[xresult][yCoord] = 1
+        setTower.append((xresult, yresult))
         xresult = xCoord - 3 if xCoord - 3 >= 0 else 0
         cityMatrix[xresult][yCoord] = 1
+        setTower.append((xresult, yresult))
         yresult = yCoord + 3 if yCoord + 3 <= D else D-1
         cityMatrix[xCoord][yresult] = 1
+        setTower.append((xresult, yresult))
         yresult = yCoord - 3 if yCoord - 3 >= 0 else 0
         cityMatrix[xCoord][yresult] = 1
+        setTower.append((xresult, yresult))
         # don't we need to setTower.append() for the above 4 points also?
         listCityMatrix.append(cityMatrix)
     setTower = list(set(setTower))
