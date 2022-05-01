@@ -14,7 +14,7 @@ from instance import Instance
 from solution import Solution
 from file_wrappers import StdinFileWrapper, StdoutFileWrapper
 import math
-from random import randint
+from random import randint, seed
 
 
 def solve_naive(instance: Instance) -> Solution:
@@ -69,6 +69,9 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
 
 def solve_distributed_greedy(instance: Instance) -> Solution:
 
+    # set seed
+    seed(42)
+
     # initialize data structures
     solution_set = []
 
@@ -79,7 +82,6 @@ def solve_distributed_greedy(instance: Instance) -> Solution:
     # create city matrices and find valid tower positions
     listTower, listCityMatrix, dictCity = create_city_matrices(instance)
 
-    
     # carry out matrix addition to obtain matrix containing degrees of towers
     finalMatrix = sum(listCityMatrix)
 
@@ -91,34 +93,39 @@ def solve_distributed_greedy(instance: Instance) -> Solution:
         highestTower = listTower[rand_index]
         highest_x, highest_y = highestTower.x, highestTower.y
         connected_cities = []
-        highestDegree = 0
         curDegree = finalMatrix[highest_x][highest_y]
 
         # check all towers within service radius for highest tower
-        for i in range(-2, 3):
-            for j in range(-2, 3):
-                x_neighbour = highest_x + i
-                y_neighbour = highest_y + j
-                if (x_neighbour, y_neighbour) in listTower:
-                    for idx, tower in enumerate(listTower):
-                        temp_connected_cities = []
-                        for city, city_idx in dictCity.items():
-                            connected = listCityMatrix[city_idx][tower.x][tower.y]
-                            # if tower is connected to city
-                            if connected > 0:
-                                temp_connected_cities.append(city)
-                        if curDegree > highestDegree:
-                            highestDegree = curDegree
-                            highestTower = tower
-                            connected_cities = temp_connected_cities
+        while highest_x < D-1 and highest_y < D-1 and highest_x >= 0 and highest_y >= 0:
+            for i in range(-2, 3):
+                for j in range(-2, 3):
+                    x_neighbour = highest_x + i
+                    y_neighbour = highest_y + j
+                    if (x_neighbour, y_neighbour) in listTower:
+                        # check if neighbour tower has higher degree than current tower
+                        neighbourDegree = finalMatrix[x_neighbour][y_neighbour]
+                        if neighbourDegree > curDegree:
+                            highest_x, highest_y = x_neighbour, y_neighbour
+                            break
+                else:
+                    continue
+                break        
+        
+        temp_connected_cities = []
+        for city, city_idx in dictCity.items():
+            connected = listCityMatrix[city_idx][highest_x][highest_y]
+            # if tower is connected to city
+            if connected > 0:
+                temp_connected_cities.append(city)
+        connected_cities = temp_connected_cities
 
-                    # add this tower with highest degree to solution set
-                    solution_set.append(highestTower)
+        # add this tower with highest degree to solution set
+        solution_set.append((highest_x, highest_y))
         
         # penalizing 
-        for i in range(highestTower.x - Rp if highestTower.x - Rp >= 0 else 0, highestTower.x + Rp + 1 if highestTower.x + Rp + 1 < D+1 else D):
-            for j in range(highestTower.y - Rp if highestTower.y - Rp >= 0 else 0, highestTower.y + Rp + 1 if highestTower.y + Rp + 1 < D+1 else D):
-                if Point.distance_obj(Point.parse("{} {}".format(i, j)), highestTower) <= Rp:
+        for i in range(highest_x - Rp if highest_x - Rp >= 0 else 0, highest_x + Rp + 1 if highest_x + Rp + 1 < D+1 else D):
+            for j in range(highest_y - Rp if highest_y - Rp >= 0 else 0, highest_y + Rp + 1 if highest_y + Rp + 1 < D+1 else D):
+                if Point.distance_obj(Point.parse("{} {}".format(i, j)), (highest_x, highest_y)) <= Rp:
                     for cityMatrix in listCityMatrix:
                         cityMatrix[i][j] = cityMatrix[i][j]/(math.exp(0.17))
 
