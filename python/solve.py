@@ -113,7 +113,7 @@ def solve_distributed_greedy(instance: Instance) -> Solution:
                     neighbourDegree = finalMatrix[x_neighbour][y_neighbour]
                     if neighbourDegree > curDegree:
                         highest_x, highest_y = x_neighbour, y_neighbour
-            # TODO: Edge cases
+
             x_neighbour = candidate_x + 3 if candidate_x + 3 < D else D - 1
             neighbourDegree = finalMatrix[x_neighbour][candidate_y]
             if neighbourDegree > curDegree:
@@ -138,19 +138,19 @@ def solve_distributed_greedy(instance: Instance) -> Solution:
 
         temp_connected_cities = []
         for city, city_idx in dictCity.items():
-            connected = listCityMatrix[city_idx][highest_x][highest_y]
+            connected = listCityMatrix[city_idx][candidate_x][candidate_y]
             # if tower is connected to city
             if connected > 0:
                 temp_connected_cities.append(city)
         connected_cities = temp_connected_cities
 
         # add this tower with highest degree to solution set
-        solution_set.append((highest_x, highest_y))
+        solution_set.append((candidate_x, candidate_y))
 
         # penalizing
-        for i in range(highest_x - Rp if highest_x - Rp >= 0 else 0, highest_x + Rp + 1 if highest_x + Rp + 1 < D+1 else D):
-            for j in range(highest_y - Rp if highest_y - Rp >= 0 else 0, highest_y + Rp + 1 if highest_y + Rp + 1 < D+1 else D):
-                if Point.distance_obj(Point.parse("{} {}".format(i, j)), (highest_x, highest_y)) <= Rp:
+        for i in range(candidate_x - Rp if candidate_x - Rp >= 0 else 0, candidate_x + Rp + 1 if candidate_x + Rp + 1 < D+1 else D):
+            for j in range(candidate_y - Rp if candidate_y - Rp >= 0 else 0, candidate_y + Rp + 1 if candidate_y + Rp + 1 < D+1 else D):
+                if Point.distance_obj(Point.parse("{} {}".format(i, j)), Point.parse("{} {}".format(candidate_x, candidate_y))) <= Rp:
                     for cityMatrix in listCityMatrix:
                         cityMatrix[i][j] = cityMatrix[i][j]/(math.exp(0.17))
 
