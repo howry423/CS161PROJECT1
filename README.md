@@ -1,69 +1,30 @@
-# Spring 2022 CS170 Project Skeleton
+Run the following:
 
-## Requirements
+python3 python/solve_all.py inputs outputs1
 
-A Python skeleton is available in the `python` subdirectory. The Python
-skeleton was developed using Python 3.9, but it should work with Python
-versions 3.6+.
+This runs the sequential greedy algorithm on all inputs and stores outputs in the folder outputs1.
 
-## Usage
+Then, modify the function solver() in solve_all.py as follows:
 
-### Generating instances
-
-To generate instances, read through [`python/instance.py`](python/instance.py),
-which contains a dataclass (struct) that holds the data for an instance, as
-well as other relevant methods. Then modify the
-[`python/generate.py`](python/generate.py) file by filling in the
-`make_{small,medium,large}_instance` functions.
-
-After you have filled in those functions, you can run `make generate` in the
-`python` directory to generate instances into the input directory.
-
-To run unit tests, run `make check`.
-
-## Solving
-
-We've created a solver skeleton at [`python/solve.py`](python/solve.py).
-```bash
-python3 solve.py case.in --solver=naive case.out
-```
-
-We've also created a skeleton that runs your solver on all cases and puts them
-in the output directory. To use it, modify
-[`python/solve_all.py`](python/solve_all.py) to use your solver function(s).
-Then run
-
-```
-python3 python/solve_all.py inputs outputs
-```
-
-in the root directory.
+def solver(size: Size, instance: Instance) -> Solution:
+    # Modify this function to use your imported solvers.
+    # YOUR CODE HERE
+    if size == Size.SMALL:
+        return solve_naive(instance)
+    elif size == Size.MEDIUM:
+        return solve_naive(instance)
+    elif size == Size.LARGE:
+        return solve_naive(instance)
 
 
-## Merging
+Then, run the following:
 
-To merge multiple output folders, taking the best solutions, see
-[`python/merge.py`](python/merge.py).
+python3 python/solve_all.py inputs outputs2
 
+This runs the naive algorithm on all inputs and stores outputs in the folder outputs2.
 
-## Visualizing Instances
+Lastly, run the following:
 
-To visualize problem instances, run `python3 visualize.py`, passing  in the
-path to your `.in` file as the first argument (or `-` to read from standard
-input). To visualize a solution as well, pass in a `.out` file to the option
-`--with-solution`.
+python3 python/merge.py --inputs inputs outputs1 outputs2 best
 
-By default, the output visualization will be written as a SVG file to standard
-output. To redirect it to a file, use your shell's output redirection or pass
-in an output file as an additional argument.
-
-For example, you could run
-```bash
-python3 visualize.py my_input.in out.svg
-```
-to create an `out.svg` file visualizing the `my_input.in` problem instance.
-
-To visualize a solution file for this instance as well, you could run
-```bash
-python3 visualize.py my_input.in --with-solution my_soln.out out.svg
-```
+This merges the two output folders together into a folder in the root directory named "best". 
