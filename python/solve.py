@@ -23,6 +23,7 @@ def solve_naive(instance: Instance) -> Solution:
         towers=instance.cities,
     )
 
+
 def solve_sequential_greedy(instance: Instance) -> Solution:
 
     # initialize data structures
@@ -55,7 +56,7 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
                 connected_cities = temp_connected_cities
 
         solution_set.append(highestTower)
-        
+
         for i in range(highestTower.x - Rp if highestTower.x - Rp >= 0 else 0, highestTower.x + Rp + 1 if highestTower.x + Rp + 1 < D+1 else D):
             for j in range(highestTower.y - Rp if highestTower.y - Rp >= 0 else 0, highestTower.y + Rp + 1 if highestTower.y + Rp + 1 < D+1 else D):
                 if Point.distance_obj(Point.parse("{} {}".format(i, j)), highestTower) <= Rp:
@@ -66,6 +67,7 @@ def solve_sequential_greedy(instance: Instance) -> Solution:
             dictCity.pop(city_point)
 
     return Solution(instance=instance, towers=solution_set)
+
 
 def solve_distributed_greedy(instance: Instance) -> Solution:
 
@@ -90,27 +92,50 @@ def solve_distributed_greedy(instance: Instance) -> Solution:
 
         # select random point from listTower
         rand_index = randint(0, len(listTower)-1)
-        highestTower = listTower[rand_index]
-        highest_x, highest_y = highestTower.x, highestTower.y
+        candidateTower = listTower[rand_index]
+        candidate_x, candidate_y = candidateTower.x, candidateTower.y
+        highest_x, highest_y = -D-1, -D-1
         connected_cities = []
-        curDegree = finalMatrix[highest_x][highest_y]
+        curDegree = finalMatrix[candidate_x][candidate_y]
 
         # check all towers within service radius for highest tower
-        while highest_x < D-1 and highest_y < D-1 and highest_x >= 0 and highest_y >= 0:
+        # while highest_x < D-1 and highest_y < D-1 and highest_x >= 0 and highest_y >= 0:
+        while candidate_x != highest_x and candidate_y != highest_y:
+            highest_x = candidate_x
+            highest_y = candidate_y
             for i in range(-2, 3):
                 for j in range(-2, 3):
-                    x_neighbour = highest_x + i
-                    y_neighbour = highest_y + j
-                    if (x_neighbour, y_neighbour) in listTower:
-                        # check if neighbour tower has higher degree than current tower
-                        neighbourDegree = finalMatrix[x_neighbour][y_neighbour]
-                        if neighbourDegree > curDegree:
-                            highest_x, highest_y = x_neighbour, y_neighbour
-                            break
-                else:
-                    continue
-                break        
-        
+                    x_neighbour = candidate_x + i if candidate_x + i < D else D-1
+                    x_neighbour = candidate_x + i if candidate_x + i >= 0 else 0
+                    y_neighbour = candidate_y + j if candidate_y + j < D else D-1
+                    y_neighbour = candidate_y + j if candidate_y + j >= 0 else 0
+                    # check if neighbour tower has higher degree than current tower
+                    neighbourDegree = finalMatrix[x_neighbour][y_neighbour]
+                    if neighbourDegree > curDegree:
+                        highest_x, highest_y = x_neighbour, y_neighbour
+            # TODO: Edge cases
+            x_neighbour = candidate_x + 3 if candidate_x + 3 < D else D - 1
+            neighbourDegree = finalMatrix[x_neighbour][candidate_y]
+            if neighbourDegree > curDegree:
+                highest_x, highest_y = x_neighbour, y_neighbour
+            x_neighbour = candidate_x - 3 if candidate_x - 3 >= 0 else 0
+            neighbourDegree = finalMatrix[x_neighbour][candidate_y]
+            if neighbourDegree > curDegree:
+                highest_x, highest_y = x_neighbour, y_neighbour
+            y_neighbour = candidate_y + 3 if candidate_y + 3 < D else D - 1
+            neighbourDegree = finalMatrix[candidate_x][y_neighbour]
+            if neighbourDegree > curDegree:
+                highest_x, highest_y = x_neighbour, y_neighbour
+            y_neighbour = candidate_y - 3 if candidate_y - 3 >= 0 else 0
+            neighbourDegree = finalMatrix[candidate_x][y_neighbour]
+            if neighbourDegree > curDegree:
+                highest_x, highest_y = x_neighbour, y_neighbour
+
+            if highest_x != candidate_x or highest_y != candidate_y:
+                candidate_x = highest_x
+                candidate_y = highest_y
+                highest_x, highest_y = -D-1, -D-1
+
         temp_connected_cities = []
         for city, city_idx in dictCity.items():
             connected = listCityMatrix[city_idx][highest_x][highest_y]
@@ -121,8 +146,8 @@ def solve_distributed_greedy(instance: Instance) -> Solution:
 
         # add this tower with highest degree to solution set
         solution_set.append((highest_x, highest_y))
-        
-        # penalizing 
+
+        # penalizing
         for i in range(highest_x - Rp if highest_x - Rp >= 0 else 0, highest_x + Rp + 1 if highest_x + Rp + 1 < D+1 else D):
             for j in range(highest_y - Rp if highest_y - Rp >= 0 else 0, highest_y + Rp + 1 if highest_y + Rp + 1 < D+1 else D):
                 if Point.distance_obj(Point.parse("{} {}".format(i, j)), (highest_x, highest_y)) <= Rp:
@@ -136,8 +161,10 @@ def solve_distributed_greedy(instance: Instance) -> Solution:
     return Solution(instance=instance, towers=solution_set)
 
 # HELPER FUNCTION
+
+
 def create_city_matrices(instance: Instance):
-    
+
     # initialize data structures
     listCityMatrix = []
     dictCity = {}
@@ -180,7 +207,7 @@ def create_city_matrices(instance: Instance):
     setTower = list(set(setTower))
     for tower in setTower:
         listTower.append(Point.parse("{} {}".format(tower[0], tower[1])))
-    
+
     return listTower, listCityMatrix, dictCity
 
 
